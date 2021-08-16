@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import League, Team, Player
+from django.db.models import Avg, Count
 
 from . import team_maker
 
@@ -32,8 +33,13 @@ def index(request):
 		"teams_sophia":Team.objects.filter(curr_players__first_name__contains='Sophia'),
 		"league_sophia":League.objects.filter(teams__curr_players__first_name__contains='Sophia'),
 		"player_Flores":Player.objects.filter(last_name__contains='flores') & Player.objects.exclude(curr_team__team_name='Roughriders'),
-
-
+		"teams_evans":Team.objects.filter(all_players__first_name="Samuel", all_players__last_name="Evans"),
+		"players_maniota":Player.objects.filter(all_teams__team_name__icontains="Tiger", all_teams__location="Manitoba"),
+		"players_vikings":Player.objects.filter(all_teams__team_name__icontains="Vikings", all_teams__location="Wichita").exclude(curr_team__team_name='Vikings', all_teams__location='Wichita'),
+		"team_jacob":Team.objects.filter(all_players__first_name="Jacob", all_players__last_name="Gray").exclude(team_name='Colts', location='Oregon'),
+		"players_joshua":Player.objects.filter(first_name="Joshua", all_teams__league__name="Atlantic Federation of Amateur Baseball Players" ),
+		"teams_12": Team.objects.annotate( c= Count("all_players")).filter(c__gt=11),
+		"All_players": Player.objects.annotate( b= Count("all_teams")).order_by("-b"),
 
 
 
